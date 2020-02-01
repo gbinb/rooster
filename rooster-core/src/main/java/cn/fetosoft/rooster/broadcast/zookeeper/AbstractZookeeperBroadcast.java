@@ -133,12 +133,10 @@ public abstract class AbstractZookeeperBroadcast extends AbstractTaskBroadcast {
 					@Override
 					public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent event) throws Exception {
 						TreeCacheEvent.Type type = event.getType();
-						System.out.println(event.getType());
 						if(type == TreeCacheEvent.Type.NODE_ADDED || type == TreeCacheEvent.Type.NODE_UPDATED)
 						{
 							String taskJSON = new String(event.getData().getData(), "utf-8");
 							if(taskJSON.startsWith("{") && taskJSON.endsWith("}")) {
-								System.out.println(taskJSON);
 								JSONObject jsonObject = JSONObject.parseObject(taskJSON);
 								TaskInfo taskInfo = JSONObject.toJavaObject(jsonObject, TaskInfo.class);
 								taskInfo.addAllParams(jsonObject.getJSONObject("paramsMap"));

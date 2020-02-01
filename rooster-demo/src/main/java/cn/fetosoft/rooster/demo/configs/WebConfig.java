@@ -26,10 +26,6 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	public WebConfig(){
-		System.out.println("Init WebConfig");
-	}
-
 	/**
 	 * Http message converter http message converter.
 	 *
@@ -68,7 +64,6 @@ public class WebConfig implements WebMvcConfigurer {
 				//禁止循环引用
 				SerializerFeature.DisableCircularReferenceDetect
 		);
-
 		// 3、处理中文乱码问题
 		List<MediaType> fastMediaTypes = new ArrayList<>();
 		fastMediaTypes.add(MediaType.APPLICATION_JSON);
@@ -117,7 +112,5 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**").addResourceLocations(
 				"classpath:/");
-		registry.addResourceHandler("swagger-ui.html").addResourceLocations(
-				"classpath:/META-INF/resources/");
 	}
 }
