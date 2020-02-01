@@ -110,7 +110,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**").addResourceLocations(
-				"classpath:/");
+		//默认静态资源处理
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/META-INF/resources/static/");
 	}
 }

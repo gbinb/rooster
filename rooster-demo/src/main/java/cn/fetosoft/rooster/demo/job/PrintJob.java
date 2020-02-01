@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +36,7 @@ public class PrintJob implements Job {
 		JobDetail jobDetail = context.getJobDetail();
 		JobDataMap map = jobDetail.getJobDataMap();
 		try {
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.MILLISECONDS.sleep(new Random().nextInt(3000));
 			//throw new JobExecutionException("The job is error!");
 		} catch (InterruptedException e) {
 			e.printStackTrace();

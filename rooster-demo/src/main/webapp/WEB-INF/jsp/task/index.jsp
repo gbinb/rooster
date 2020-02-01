@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String ctxPath = request.getContextPath();
+    String host = request.getServerName() + ":" + request.getServerPort();
 %>
 <html>
 <head>
@@ -10,6 +11,7 @@
     <link href="http://g.alicdn.com/sj/dpl/1.5.1/css/sui.min.css" rel="stylesheet">
     <script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.5.1/js/sui.min.js"></script>
+    <script type="text/javascript" src="<%=ctxPath%>/static/jscript/echarts.common.min.js"></script>
     <script type="text/javascript">
         function StringBuilder() {
             this.data = [];
@@ -23,10 +25,6 @@
         StringBuilder.prototype.toString = function(separate){
             return this.data.join(separate);
         }
-
-        $(function () {
-            queryRunningTasks();
-        });
 
         /**
          * 表单转json
@@ -154,7 +152,16 @@
         </div>
     </div>
 </div>
+<p>
+</p>
+<h2>任务监控</h2>
+<div id="div_monitorMessage" style="width:1000px;height:30px; font-size: 14px;"></div>
+<div id="main" style="width: 1500px;height:450px;"></div>
 <script type="text/javascript">
+    $(function () {
+        queryRunningTasks();
+        init_monitorWebsocket('ws://<%=host%>/websocket/jobMonitor');
+    });
 
     //查询运行中的任务
     function queryRunningTasks() {
@@ -271,5 +278,6 @@
         return taskCode;
     }
 </script>
+<script type="text/javascript" src="<%=ctxPath%>/static/jscript/job.js"></script>
 </body>
 </html>

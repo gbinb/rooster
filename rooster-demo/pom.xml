@@ -35,6 +35,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.47</version>
@@ -69,6 +74,16 @@
         <targetPath>/META-INF/resources</targetPath>
         <!--如果使用maven启动本地tomcat启动，则使用如下配置-->
         <!--<targetPath>/WEB-INF/jsp</targetPath>-->
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+
+      <!-- 打包时将jsp文件拷贝到META-INF目录下 -->
+      <resource>
+        <!-- 指定resources插件处理哪个目录下的资源文件 -->
+        <directory>src/main/webapp/static</directory>
+        <targetPath>/META-INF/resources/static</targetPath>
         <includes>
           <include>**/*.*</include>
         </includes>
