@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Title：打印定时
@@ -33,6 +34,12 @@ public class PrintJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		JobDetail jobDetail = context.getJobDetail();
 		JobDataMap map = jobDetail.getJobDataMap();
+		try {
+			TimeUnit.SECONDS.sleep(2);
+			//throw new JobExecutionException("The job is error!");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		String date = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
 		LOGGER.info("Task named ()/{}-{} start!!! >>> {}", roosterConfig.getZkClusterPath(),
 				map.getString("code"), map.getString("name"), date);

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ import java.util.Map;
  * @Description
  * @Version
  */
-public class TaskInfo {
+public class TaskInfo implements Serializable {
 
 	/**
 	 * 任务编号，须唯一
@@ -105,6 +107,7 @@ public class TaskInfo {
 
 	public void setJobClass(String jobClass) {
 		this.jobClass = jobClass;
+		this.paramsMap.put("jobClass", jobClass);
 	}
 
 	public String getClusterIP() {
@@ -113,6 +116,7 @@ public class TaskInfo {
 
 	public void setClusterIP(String clusterIP) {
 		this.clusterIP = clusterIP;
+		this.paramsMap.put("clusterIP", clusterIP);
 	}
 
 	/**
@@ -120,16 +124,18 @@ public class TaskInfo {
 	 * @param name
 	 * @param value
 	 */
-	public void addParam(String name, Object value){
+	public TaskInfo addParam(String name, Object value){
 		this.paramsMap.put(name, value);
+		return this;
 	}
 
 	/**
 	 * 添加更新参数
 	 * @param map
 	 */
-	public void addAllParams(Map<String, Object> map){
+	public TaskInfo addAllParams(Map<String, Object> map){
 		this.paramsMap.putAll(map);
+		return this;
 	}
 
 	public Map<String, Object> getParamsMap(){
@@ -139,5 +145,17 @@ public class TaskInfo {
 	@Override
 	public String toString(){
 		return JSON.toJSONString(this);
+	}
+
+	/**
+	 * Create task from extended parameters
+	 * @return
+	 */
+	public void buildTask(){
+		this.code = (String) paramsMap.get("code");
+		this.name = (String) paramsMap.get("name");
+		this.expression = (String) paramsMap.get("expression");
+		this.jobClass = (String) paramsMap.get("jobClass");
+		this.clusterIP = (String) paramsMap.get("clusterIP");
 	}
 }

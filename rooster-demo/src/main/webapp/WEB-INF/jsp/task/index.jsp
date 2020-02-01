@@ -203,6 +203,9 @@
                     $('#inputParams').val(task.params);
                 }
             }, 'json');
+            $('#inputCode').prop('readonly', true);
+        }else{
+            $('#inputCode').prop('readonly', false);
         }
     }
 

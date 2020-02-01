@@ -1,6 +1,7 @@
 package cn.fetosoft.rooster.core;
 
-import cn.fetosoft.rooster.monitor.JobRunningMonitor;
+import cn.fetosoft.rooster.monitor.JobExecListener;
+import cn.fetosoft.rooster.monitor.JobExecuteMonitor;
 import cn.fetosoft.rooster.monitor.SchedulerMonitor;
 import cn.fetosoft.rooster.monitor.TaskListener;
 import org.quartz.*;
@@ -37,6 +38,9 @@ public abstract class AbstractScheduled implements ScheduledService, Initializin
 
 	@Autowired(required = false)
 	private TaskListener taskListener;
+
+	@Autowired(required = false)
+	private JobExecListener jobExecListener;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -174,10 +178,14 @@ public abstract class AbstractScheduled implements ScheduledService, Initializin
 	 */
 	private void addScheduledMonitor(){
 		try {
-			JobListener jobListener = new JobRunningMonitor();
-			SchedulerMonitor schedulerMonitor = new SchedulerMonitor(this.scheduler, this.taskListener);
-			this.scheduler.getListenerManager().addJobListener(jobListener);
-			this.scheduler.getListenerManager().addSchedulerListener(schedulerMonitor);
+			if(this.taskListener!=null){
+				SchedulerMonitor schedulerMonitor = new SchedulerMonitor(this.scheduler, this.taskListener);
+				this.scheduler.getListenerManager().addSchedulerListener(schedulerMonitor);
+			}
+			if(this.jobExecListener!=null) {
+				JobListener jobListener = new JobExecuteMonitor(this.jobExecListener);
+				this.scheduler.getListenerManager().addJobListener(jobListener);
+			}
 		} catch (SchedulerException e) {
 			logger.error("addScheduledMonitor", e);
 		}
