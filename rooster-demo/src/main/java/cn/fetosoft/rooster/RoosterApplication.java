@@ -34,10 +34,10 @@ public class RoosterApplication {
 		return "Hello world!";
 	}
 
-//	@Bean
-//	public ServerEndpointExporter serverEndpointExporter() {
-//		return new ServerEndpointExporter();
-//	}
+	@Bean
+	public ServerEndpointExporter serverEndpointExporter() {
+		return new ServerEndpointExporter();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(RoosterApplication.class);

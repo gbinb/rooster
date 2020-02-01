@@ -40,6 +40,6 @@ public class JobMonitorDemo implements JobExecListener {
 		jsonObject.put("code", jobContext.getTaskInfo().getCode());
 		jsonObject.put("fireTime", DateFormatUtils.format(jobContext.getFireTime(), "yyyy-MM-dd HH:mm:ss"));
 		jsonObject.put("runTime", jobContext.getRunTime());
-		jobLiveMonitor.put(jsonObject.toJSONString());
+		jobLiveMonitor.put(jobContext.getTaskInfo().getCode(), jsonObject.toJSONString());
 	}
 }

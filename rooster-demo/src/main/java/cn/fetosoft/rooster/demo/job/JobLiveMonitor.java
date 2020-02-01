@@ -7,6 +7,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -16,16 +17,17 @@ import java.util.concurrent.BlockingQueue;
  * @create 2020/2/1 15:25
  */
 @Component
-@ServerEndpoint("/websocket/jobMonitor")
+@ServerEndpoint(value = "/websocket/jobMonitor/{jobCode}")
 public class JobLiveMonitor implements DisposableBean {
 
 	private final Logger logger = LoggerFactory.getLogger(JobLiveMonitor.class);
 	private final static BlockingQueue<String> QUEUE = new ArrayBlockingQueue<>(100);
 
 	private static volatile boolean isConn = false;
+	private static volatile String jobCode = null;
 
-	public void put(String data){
-		if(isConn) {
+	public void put(String code, String data){
+		if(isConn && code.equals(jobCode)) {
 			QUEUE.offer(data);
 		}
 	}
@@ -33,14 +35,14 @@ public class JobLiveMonitor implements DisposableBean {
 	private Session session;
 
 	@OnOpen
-	public void openSession(Session session){
+	public void openSession(Session session, @PathParam("jobCode") String code){
 		this.session = session;
 		try {
+			jobCode = code;
 			isConn = true;
 			while (isConn) {
 				String data = QUEUE.poll();
 				if(StringUtils.isNotBlank(data)) {
-					System.out.println(data);
 					session.getBasicRemote().sendText(data);
 				}
 			}
@@ -69,6 +71,7 @@ public class JobLiveMonitor implements DisposableBean {
 	private void close(){
 		try{
 			isConn = false;
+			jobCode = null;
 			if(session!=null){
 				session.close();
 			}

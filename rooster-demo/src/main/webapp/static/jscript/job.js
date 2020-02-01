@@ -74,7 +74,7 @@ myChart.setOption(option);
  */
 function refreshChart(jsonObj) {
     var seriesData = {name: '任务名称：' + jsonObj.code + '<br/>触发时间：' + jsonObj.fireTime, value:[jsonObj.fireTime, jsonObj.runTime]};
-    if(data.length>30){
+    if(data.length>20){
         data.shift();
     }
     data.push(seriesData);
@@ -91,10 +91,10 @@ var monitor_websocket;
 /**
  * 初始化WebSocket
  */
-function init_monitorWebsocket(wsUrl) {
+function initMonitorWebsocket(wsUrl, code) {
     monitor_websocket = new WebSocket(wsUrl);
     monitor_websocket.onopen = function (evt) {
-        chartWriteToScreen("Connectiond to server success!");
+        chartWriteToScreen("Monitor connect "+code+" success!");
     };
     monitor_websocket.onmessage = function (evt) {
         var jsonObj = $.parseJSON(evt.data);
@@ -109,9 +109,16 @@ function init_monitorWebsocket(wsUrl) {
 /**
  * 关闭连接
  */
-function close_monitorWebsocket() {
+function closeMonitorWebsocket() {
     if(monitor_websocket!=undefined){
-        monitor_websocket.close("3000", "关闭连接");;
+        monitor_websocket.close("3000", "关闭连接");
+        chartWriteToScreen("Monitor disconnect!");
+        data = [];
+        myChart.setOption({
+            series: [{
+                data: data
+            }]
+        });
     }
 }
 

@@ -52,7 +52,7 @@
 </head>
 
 <body>
-<h2>Hello World</h2>
+<h2>Hello Rooster</h2>
 <p>
 </p>
 <div class="sui-btn-toolbar">
@@ -73,6 +73,12 @@
     </div>
     <div class="sui-btn-group">
         <button class="sui-btn btn-xlarge btn-primary" onclick="stop()">停止</button>
+    </div>
+    <div class="sui-btn-group">
+        <button class="sui-btn btn-xlarge btn-primary" onclick="monitor()">应用监控</button>
+    </div>
+    <div class="sui-btn-group">
+        <button class="sui-btn btn-xlarge btn-primary" onclick="stopMonitor()">停止监控</button>
     </div>
 </div>
 <p></p>
@@ -160,7 +166,6 @@
 <script type="text/javascript">
     $(function () {
         queryRunningTasks();
-        init_monitorWebsocket('ws://<%=host%>/websocket/jobMonitor');
     });
 
     //查询运行中的任务
@@ -170,7 +175,8 @@
             var sb = new StringBuilder();
             $.each(data, function (index, task) {
                 sb.append("<tr>");
-                sb.append("<td><input type=\"checkbox\" value=\"").append(task.code).append("\" />").append("</td>");
+                sb.append("<td><input type=\"checkbox\" value=\"").append(task.code).append("\" />");
+                sb.append("<input type='hidden' id='hid_job_").append(task.code).append("' value='").append(task.status).append("' />").append("</td>");
                 sb.append("<td>").append(task.code).append("</td>");
                 sb.append("<td>").append(task.name).append("</td>");
                 sb.append("<td>").append(getTaskStatus(task.status)).append("</td>");
@@ -266,6 +272,7 @@
                     setTimeout(queryRunningTasks, 2000);
                 }
             }, 'json');
+            closeMonitorWebsocket();
         }
     }
 
@@ -276,6 +283,25 @@
             taskCode = $(boxs[0]).val();
         }
         return taskCode;
+    }
+
+    function monitor() {
+        var code = getSelectedCheckbox()
+        if(code==''){
+            $.alert('请选择需监控的Job!');
+            return;
+        }
+        var status = parseInt($('#hid_job_' + code).val());
+        if(status!=1){
+            $.alert('请选择运行中的Job!');
+            return;
+        }
+        closeMonitorWebsocket();
+        initMonitorWebsocket('ws://<%=host%>/websocket/jobMonitor/' + code, code);
+    }
+
+    function stopMonitor() {
+        closeMonitorWebsocket();
     }
 </script>
 <script type="text/javascript" src="<%=ctxPath%>/static/jscript/job.js"></script>
