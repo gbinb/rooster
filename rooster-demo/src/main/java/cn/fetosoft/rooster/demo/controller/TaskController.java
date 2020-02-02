@@ -2,6 +2,7 @@ package cn.fetosoft.rooster.demo.controller;
 
 import cn.fetosoft.rooster.core.Result;
 import cn.fetosoft.rooster.core.TaskAction;
+import cn.fetosoft.rooster.core.TaskException;
 import cn.fetosoft.rooster.core.TaskInfo;
 import cn.fetosoft.rooster.demo.data.TaskDAO;
 import cn.fetosoft.rooster.demo.job.PrintJob;
@@ -114,7 +115,11 @@ public class TaskController {
 		Result result = Result.SUCCESS;
 		if(taskInfo.getAction()==TaskAction.START.getCode()){
 			taskInfo.setAction(TaskAction.STOP.getCode());
-			result = taskBroadcast.broadcast(taskInfo);
+			try {
+				result = taskBroadcast.broadcast(taskInfo);
+			} catch (TaskException e) {
+				result = Result.FAIL.setMsg(e.getMessage());
+			}
 		}
 		if(result==Result.SUCCESS){
 			result = taskDAO.delete(code);
@@ -136,7 +141,12 @@ public class TaskController {
 		Map<String, Object> map = list.get(0);
 		TaskInfo taskInfo = taskDAO.mapToTask(map);
 		taskInfo.setAction(TaskAction.START.getCode());
-		Result result = taskBroadcast.broadcast(taskInfo);
+		Result result = null;
+		try {
+			result = taskBroadcast.broadcast(taskInfo);
+		} catch (TaskException e) {
+			result = Result.FAIL.setMsg(e.getMessage());
+		}
 		return result.toString();
 	}
 
@@ -149,7 +159,12 @@ public class TaskController {
 	public String stop(@RequestParam String code){
 		TaskInfo taskInfo = this.getTask(TaskAction.STOP, "0/5 * * * * ?", "192.168.1.5");
 		taskInfo.setCode(code);
-		Result result = taskBroadcast.broadcast(taskInfo);
+		Result result = null;
+		try {
+			result = taskBroadcast.broadcast(taskInfo);
+		} catch (TaskException e) {
+			result = Result.FAIL.setMsg(e.getMessage());
+		}
 		return result.toString();
 	}
 

@@ -1,6 +1,7 @@
 package cn.fetosoft.rooster.broadcast;
 
 import cn.fetosoft.rooster.core.Result;
+import cn.fetosoft.rooster.core.TaskException;
 import cn.fetosoft.rooster.core.TaskInfo;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface TaskBroadcast {
 	 * @param taskInfo
 	 * @return
 	 */
-	default Result broadcast(TaskInfo taskInfo){
+	default Result broadcast(TaskInfo taskInfo) throws TaskException {
 		return null;
 	}
 
@@ -26,9 +27,4 @@ public interface TaskBroadcast {
 	 * @return
 	 */
 	default List<TaskInfo> getRegisterdTasks(){ return null; }
-
-	/**
-	 * 销毁资源
-	 */
-	default void close(){}
 }
