@@ -35,6 +35,7 @@ option = {
         }
     },
     xAxis: {
+        name: '触发时间',
         type: 'time',
         splitLine: {
             show: false
@@ -49,7 +50,7 @@ option = {
         }
     },
     series: [{
-        name: '模拟数据',
+        name: '运行数据',
         type: 'line',
         showSymbol: true,
         symbol: 'emptyCircle',

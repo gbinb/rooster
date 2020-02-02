@@ -169,13 +169,13 @@
     });
 
     //查询运行中的任务
-    function queryRunningTasks() {
+    function queryRunningTasks(taskCode) {
         $('#task_body').empty();
         $.get('<%=ctxPath%>/task/fromMysql', function (data) {
             var sb = new StringBuilder();
             $.each(data, function (index, task) {
                 sb.append("<tr>");
-                sb.append("<td><input type=\"checkbox\" value=\"").append(task.code).append("\" />");
+                sb.append("<td><input id='box_").append(task.code).append("' type=\"checkbox\" value=\"").append(task.code).append("\" />");
                 sb.append("<input type='hidden' id='hid_job_").append(task.code).append("' value='").append(task.status).append("' />").append("</td>");
                 sb.append("<td>").append(task.code).append("</td>");
                 sb.append("<td>").append(task.name).append("</td>");
@@ -189,6 +189,9 @@
                 sb.append("</tr>");
             });
             $('#task_body').append(sb.toString(''));
+            if(taskCode && taskCode!=''){
+                $('#box_' + taskCode).prop('checked', true);
+            }
         }, 'json');
     }
 
@@ -255,7 +258,9 @@
         $.post('<%=ctxPath%>/task/start', {code:code}, function (data) {
             $.alert(data.msg);
             if(data.code=='SUCCESS'){
-                setTimeout(queryRunningTasks, 2000);
+                setTimeout(function () {
+                    queryRunningTasks(code);
+                }, 2000);
             }
         }, 'json');
     }
@@ -269,7 +274,9 @@
             $.post('<%=ctxPath%>/task/stop', {code:code}, function (data) {
                 $.alert(data.msg);
                 if(data.code=='SUCCESS'){
-                    setTimeout(queryRunningTasks, 2000);
+                    setTimeout(function () {
+                        queryRunningTasks(code);
+                    }, 2000);
                 }
             }, 'json');
             closeMonitorWebsocket();
