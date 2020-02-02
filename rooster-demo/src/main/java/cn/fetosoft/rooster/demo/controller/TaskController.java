@@ -51,9 +51,10 @@ public class TaskController {
 	 */
 	@RequestMapping("/fromMysql")
 	@ResponseBody
-	public String getTasksFromMysql(){
+	public String getTasksFromMysql(HttpServletRequest request){
+		String code = request.getParameter("code");
 		String data = "{}";
-		List<Map<String, Object>> list = taskDAO.getTasks(null, -1);
+		List<Map<String, Object>> list = taskDAO.getTasks(code, -1);
 		if(!CollectionUtils.isEmpty(list)){
 			for(Map<String, Object> map : list){
 				if(map.get("start_time")!=null){
@@ -73,7 +74,7 @@ public class TaskController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public String addAndStart(HttpServletRequest request){
+	public String add(HttpServletRequest request){
 		Map<String, Object> insertMap = new HashMap<>();
 		Enumeration<String> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()){
@@ -134,17 +135,12 @@ public class TaskController {
 	@RequestMapping("/start")
 	@ResponseBody
 	public String start(@RequestParam String code){
-		List<Map<String, Object>> list = taskDAO.getTasks(code, -1);
-		if(CollectionUtils.isEmpty(list)){
-			return Result.FAIL.setMsg("The task named " + code + " not exists!").toString();
-		}
-		Map<String, Object> map = list.get(0);
-		TaskInfo taskInfo = taskDAO.mapToTask(map);
-		taskInfo.setAction(TaskAction.START.getCode());
 		Result result = null;
 		try {
+			TaskInfo taskInfo = this.getTaskByCode(code);
+			taskInfo.setAction(TaskAction.START.getCode());
 			result = taskBroadcast.broadcast(taskInfo);
-		} catch (TaskException e) {
+		} catch (Exception e) {
 			result = Result.FAIL.setMsg(e.getMessage());
 		}
 		return result.toString();
@@ -157,27 +153,24 @@ public class TaskController {
 	@RequestMapping("/stop")
 	@ResponseBody
 	public String stop(@RequestParam String code){
-		TaskInfo taskInfo = this.getTask(TaskAction.STOP, "0/5 * * * * ?", "192.168.1.5");
-		taskInfo.setCode(code);
 		Result result = null;
 		try {
+			TaskInfo taskInfo = this.getTaskByCode(code);
+			taskInfo.setAction(TaskAction.STOP.getCode());
 			result = taskBroadcast.broadcast(taskInfo);
-		} catch (TaskException e) {
+		} catch (Exception e) {
 			result = Result.FAIL.setMsg(e.getMessage());
 		}
 		return result.toString();
 	}
 
-	private TaskInfo getTask(TaskAction action, String expression, String ip){
-		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.setCode("printJob");
-		taskInfo.setName("打印任务");
-		taskInfo.setAction(action.getCode());
-		taskInfo.setClusterIP(ip);
-		taskInfo.setExpression(expression);
-		taskInfo.setJobClass(PrintJob.class.getName());
-		taskInfo.addParam("env", "dev");
-		taskInfo.addParam("weather", "sunny");
-		return taskInfo;
+
+	private TaskInfo getTaskByCode(String code) throws Exception{
+		List<Map<String, Object>> list = taskDAO.getTasks(code, -1);
+		if(CollectionUtils.isEmpty(list)){
+			throw new Exception("The task named " + code + " not exists!");
+		}
+		Map<String, Object> map = list.get(0);
+		return taskDAO.mapToTask(map);
 	}
 }

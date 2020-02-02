@@ -1,7 +1,13 @@
 package cn.fetosoft.rooster.core;
 
 import cn.fetosoft.rooster.utils.NetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author guobingbing
@@ -9,6 +15,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DefaultScheduled extends AbstractScheduled {
+
+	private static final Logger logger = LoggerFactory.getLogger(DefaultScheduled.class);
+	private static final Set<Long> ipSet = new HashSet<>(16);
+
+	static {
+		List<String> localIP = NetUtil.getLocalIP();
+		for(String host : localIP){
+			logger.info("localhost ------ {}", host);
+			ipSet.add(NetUtil.ipToLong(host));
+		}
+	}
 
 	/**
 	 * 判断是否本身节点
@@ -20,12 +37,7 @@ public class DefaultScheduled extends AbstractScheduled {
 	 */
 	@Override
 	protected boolean isClusterExec(TaskInfo taskInfo) {
-		String localIP = NetUtil.getLocalIP().get(0);
-		if(NetUtil.ipToLong(localIP)==NetUtil.ipToLong(taskInfo.getClusterIP())) {
-			return true;
-		}else{
-			return false;
-		}
+		return ipSet.contains(NetUtil.ipToLong(taskInfo.getClusterIP()));
 	}
 
 }
