@@ -1,6 +1,7 @@
 package cn.fetosoft.rooster.broadcast.zookeeper;
 
 import cn.fetosoft.rooster.broadcast.AbstractTaskBroadcast;
+import cn.fetosoft.rooster.broadcast.InitBroadcastTask;
 import cn.fetosoft.rooster.core.*;
 import cn.fetosoft.rooster.utils.NetUtil;
 import com.alibaba.fastjson.JSON;
@@ -34,11 +35,12 @@ import java.util.concurrent.TimeUnit;
  * @Description
  * @Version
  */
-public abstract class AbstractZookeeperBroadcast extends AbstractTaskBroadcast {
+@Component("zookeeperBroadcast")
+public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(AbstractZookeeperBroadcast.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZookeeperBroadcast.class);
 
 	/**
 	 * 线程池
@@ -57,6 +59,9 @@ public abstract class AbstractZookeeperBroadcast extends AbstractTaskBroadcast {
 
 	@Autowired
 	private RoosterConfig roosterConfig;
+
+	@Autowired(required = false)
+	private InitBroadcastTask initBroadcastTask;
 
 	/**
 	 * 创建zk连接
@@ -193,6 +198,14 @@ public abstract class AbstractZookeeperBroadcast extends AbstractTaskBroadcast {
 		}catch(Exception e){
 			logger.error("destroy", e);
 		}
+	}
+
+	@Override
+	protected List<TaskInfo> getInitStartTasks() {
+		if(initBroadcastTask!=null){
+			return initBroadcastTask.getStartTasks();
+		}
+		return null;
 	}
 
 	@Override

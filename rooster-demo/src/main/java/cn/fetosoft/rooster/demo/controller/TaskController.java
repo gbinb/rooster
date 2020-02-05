@@ -30,7 +30,7 @@ import java.util.*;
 @RequestMapping("/task")
 public class TaskController {
 
-	@Resource(name = "defaultTaskBroadcast")
+	@Resource
 	private TaskBroadcast taskBroadcast;
 
 	@Autowired
