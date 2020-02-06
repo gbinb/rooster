@@ -8,9 +8,9 @@
     <title>任务管理</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="http://g.alicdn.com/sj/dpl/1.5.1/css/sui.min.css" rel="stylesheet">
-    <script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.5.1/js/sui.min.js"></script>
+    <link href="<%=ctxPath%>/static/css/sui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="<%=ctxPath%>/static/jscript/jquery.min.js"></script>
+    <script type="text/javascript" src="<%=ctxPath%>/static/jscript/sui.min.js"></script>
     <script type="text/javascript" src="<%=ctxPath%>/static/jscript/echarts.common.min.js"></script>
     <script type="text/javascript">
         function StringBuilder() {
