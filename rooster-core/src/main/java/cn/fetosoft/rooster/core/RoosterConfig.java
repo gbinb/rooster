@@ -17,5 +17,7 @@ public interface RoosterConfig {
 	/**
 	 * 是否启用订阅服务
 	 */
-	boolean isEnableSub();
+	default boolean isEnableSub(){
+		return true;
+	}
 }
