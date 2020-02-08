@@ -3,9 +3,6 @@ package cn.fetosoft.rooster.core;
 import cn.fetosoft.rooster.utils.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,8 +11,6 @@ import java.util.Set;
  * @author guobingbing
  * @create 2020/1/29 14:19
  */
-@Component
-@Conditional(ScheduledCondition.class)
 public class DefaultScheduled extends AbstractScheduled {
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultScheduled.class);

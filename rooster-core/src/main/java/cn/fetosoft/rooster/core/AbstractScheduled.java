@@ -150,7 +150,7 @@ public abstract class AbstractScheduled implements ScheduledService, Initializin
 		try{
 			boolean isClusterExec = this.isClusterExec(taskInfo);
 			if(!isClusterExec){
-				logger.info("Stop on other nodes! >>> {}", taskInfo.getClusterIP());
+				logger.info("Stop {} on other nodes! >>> {}", taskInfo.getCode(), taskInfo.getClusterIP());
 				return Result.NONE;
 			}
 			logger.info("Ready to stop task >>>{} >>>{} >>>{}", taskInfo.getCode(), taskInfo.getName(), taskInfo.getClusterIP());
