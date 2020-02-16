@@ -174,7 +174,7 @@
     function queryClusters() {
         $('#span_clusters').empty();
         $.get('<%=ctxPath%>/task/getClusters', function (data) {
-            $('#span_clusters').text('运行的节点：' + data);
+            $('#span_clusters').text('注册的节点：' + data);
         });
     }
 
