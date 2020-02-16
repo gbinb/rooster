@@ -2,6 +2,7 @@
 <%
     String ctxPath = request.getContextPath();
     String host = request.getServerName() + ":" + request.getServerPort();
+    String ws = (request.getRequestURL().toString().contains("fetosoft.cn")?"wss":"ws") + "://" + host;
 %>
 <html>
 <head>
@@ -53,8 +54,9 @@
 
 <body>
 <h2>Hello Rooster</h2>
-<p>
-</p>
+<p></p>
+<h4 id="span_clusters"></h4>
+<p></p>
 <div class="sui-btn-toolbar">
     <div class="sui-btn-group">
         <button class="sui-btn btn-xlarge btn-primary" onclick="queryRunningTasks()">刷新</button>
@@ -165,8 +167,16 @@
 <div id="main" style="width: 1500px;height:450px;"></div>
 <script type="text/javascript">
     $(function () {
+        queryClusters();
         queryRunningTasks();
     });
+
+    function queryClusters() {
+        $('#span_clusters').empty();
+        $.get('<%=ctxPath%>/task/getClusters', function (data) {
+            $('#span_clusters').text('运行的节点：' + data);
+        });
+    }
 
     //查询运行中的任务
     function queryRunningTasks(taskCode) {
@@ -184,7 +194,8 @@
                 sb.append("<td>").append(task.start_time).append("</td>");
                 sb.append("<td>").append(task.stop_time).append("</td>");
                 sb.append("<td>").append(task.jobClass).append("</td>");
-                sb.append("<td>").append(task.clusterIP).append("</td>");
+                sb.append("<td><input type='hidden' id='hid_host_").append(task.code).append("' value='").append(task.clusterIP).append("' />");
+                sb.append(task.clusterIP).append("</td>");
                 sb.append("<td>").append(task.params).append("</td>");
                 sb.append("</tr>");
             });
@@ -304,7 +315,8 @@
             return;
         }
         closeMonitorWebsocket();
-        initMonitorWebsocket('ws://<%=host%>/websocket/jobMonitor/' + code, code);
+        var host = $('#hid_host_' + code).val();
+        initMonitorWebsocket('<%=ws%>/websocket/jobMonitor/' + code, code);
     }
 
     function stopMonitor() {

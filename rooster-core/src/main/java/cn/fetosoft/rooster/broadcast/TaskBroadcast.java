@@ -27,4 +27,10 @@ public interface TaskBroadcast {
 	 * @return
 	 */
 	default List<TaskInfo> getRegisterdTasks(){ return null; }
+
+	/**
+	 * 获取已注册的节点
+	 * @return
+	 */
+	default List<String> getRegisterdClusters(){ return null; }
 }

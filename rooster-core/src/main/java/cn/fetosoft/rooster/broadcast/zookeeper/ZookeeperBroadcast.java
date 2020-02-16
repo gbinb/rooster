@@ -99,11 +99,11 @@ public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 
 		String path = this.roosterConfig.getZkTaskPath() + "/" + taskInfo.getCode();
 		if(taskInfo.getAction() == TaskAction.START.getCode() && this.client.checkExists().forPath(path)!=null) {
-			result.setMsg("The node named " + taskInfo.getCode() + " exists!");
+			result.setMsg("The job named " + taskInfo.getCode() + " exists!");
 			return result;
 		}
 		if(taskInfo.getAction() == TaskAction.MODIFY.getCode() && this.client.checkExists().forPath(path)==null){
-			result.setMsg("The node named " + taskInfo.getCode() + " not exists!");
+			result.setMsg("The job named " + taskInfo.getCode() + " not exists!");
 			return result;
 		}
 
@@ -225,5 +225,21 @@ public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 			logger.error("getRegisterdTasks", e);
 		}
 		return tasks;
+	}
+
+	@Override
+	public List<String> getRegisterdClusters(){
+		List<String> clusters = new ArrayList<>();
+		String path = roosterConfig.getZkClusterPath();
+		try {
+			List<String> list = this.client.getChildren().forPath(path);
+			for(String dataPath : list){
+				String cluster = new String(this.client.getData().forPath(path + "/" + dataPath), "utf-8");
+				clusters.add(cluster);
+			}
+		} catch (Exception e) {
+			logger.error("getRegisterdClusters", e);
+		}
+		return clusters;
 	}
 }

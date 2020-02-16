@@ -70,6 +70,24 @@ public class TaskController {
 	}
 
 	/**
+	 * 查询所有注册的节点
+	 * @return
+	 */
+	@RequestMapping("/getClusters")
+	@ResponseBody
+	public String getClusters(){
+		StringBuilder sb = new StringBuilder();
+		List<String> clusters = taskBroadcast.getRegisterdClusters();
+		clusters.forEach(s -> {
+			sb.append(s).append("，");
+		});
+		if(sb.length()>0){
+			sb.delete(sb.length()-1, sb.length());
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * 新增并启动任务
 	 */
 	@RequestMapping("/add")
