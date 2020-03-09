@@ -9,7 +9,7 @@
   </modules>
   <groupId>cn.fetosoft</groupId>
   <artifactId>rooster</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>rooster</name>
   <description>A simple timing framework that can be deployed and managed by multiple machines</description>
 
