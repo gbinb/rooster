@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -22,9 +23,9 @@ public class JobLiveMonitor implements DisposableBean {
 
 	private final Logger logger = LoggerFactory.getLogger(JobLiveMonitor.class);
 	private final static BlockingQueue<String> QUEUE = new ArrayBlockingQueue<>(100);
-
 	private static volatile boolean isConn = false;
 	private static volatile String jobCode = null;
+	private Session session;
 
 	public void put(String code, String data){
 		if(isConn && code.equals(jobCode)) {
@@ -32,22 +33,39 @@ public class JobLiveMonitor implements DisposableBean {
 		}
 	}
 
-	private Session session;
-
 	@OnOpen
 	public void openSession(Session session, @PathParam("jobCode") String code){
 		this.session = session;
-		try {
-			jobCode = code;
-			isConn = true;
-			while (isConn) {
-				String data = QUEUE.poll();
-				if(StringUtils.isNotBlank(data)) {
-					session.getBasicRemote().sendText(data);
+		jobCode = code;
+		isConn = true;
+		Thread thread = new Thread(new SendTextTask(session), "sendText");
+		thread.start();
+	}
+
+	class SendTextTask implements Runnable{
+
+		private Session tsession;
+
+		public SendTextTask(Session session){
+			this.tsession = session;
+		}
+
+		@Override
+		public void run() {
+			logger.info("Start sending messages >>>>>>>>>>>>>");
+			try{
+				while (isConn) {
+					String data = QUEUE.poll();
+					if(StringUtils.isNotBlank(data)) {
+						tsession.getBasicRemote().sendText(data);
+					}
 				}
+			}catch(IOException e){
+				logger.error("sendText", e);
 			}
-		} catch (Exception e) {
-			logger.error("sendText", e);
+			if(!isConn){
+				logger.info("Stop sending messages >>>>>>>>>>>>>");
+			}
 		}
 	}
 
