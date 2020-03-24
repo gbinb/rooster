@@ -74,11 +74,14 @@ public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 			client.start();
 			logger.info("The CuratorFramework is connected! >>> {}", host);
 
-			//将本机信息注册到zk中
-			String localIp = NetUtil.getLocalIP().get(0);
-			String clusterPath = this.roosterConfig.getZkClusterPath() + "/" + NetUtil.ipToLong(localIp);
-			client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(clusterPath);
-			client.setData().forPath(clusterPath, localIp.getBytes("utf-8"));
+			//当启用订阅服务时，注册本机IP
+			if(roosterConfig.isEnableSub()) {
+				//将本机信息注册到zk中
+				String localIp = NetUtil.getLocalIP().get(0);
+				String clusterPath = this.roosterConfig.getZkClusterPath() + "/" + NetUtil.ipToLong(localIp);
+				client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(clusterPath);
+				client.setData().forPath(clusterPath, localIp.getBytes("utf-8"));
+			}
 		}
 	}
 
