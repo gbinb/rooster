@@ -34,14 +34,11 @@ spring:
 
 server:
   port: 8080
-  tomcat:
-    remote-ip-header: x-forwarded-for
-    protocol-header: x-forwarded-proto
-    port-header: X-Forwarded-Port
-    accesslog:
-      debug: false #请求响应数据调试
-    basedir: /opt/front/work
-    use-forward-headers: true
+  servlet:
+    context-path: /
+    jsp:
+      init-parameters:
+        development: true
 
 rooster:
   zookeeper:
