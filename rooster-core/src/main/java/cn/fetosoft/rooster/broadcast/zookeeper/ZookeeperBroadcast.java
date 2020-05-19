@@ -79,6 +79,10 @@ public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 				//将本机信息注册到zk中
 				String localIp = NetUtil.getLocalIP().get(0);
 				String clusterPath = this.roosterConfig.getZkClusterPath() + "/" + NetUtil.ipToLong(localIp);
+				Stat stat = client.checkExists().forPath(clusterPath);
+				if(stat!=null) {
+					client.delete().deletingChildrenIfNeeded().forPath(clusterPath);
+				}
 				client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(clusterPath);
 				client.setData().forPath(clusterPath, localIp.getBytes("utf-8"));
 			}

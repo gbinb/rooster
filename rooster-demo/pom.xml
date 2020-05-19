@@ -251,6 +251,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.2.1.RELEASE</version>
         <configuration>
           <mainClass>cn.fetosoft.rooster.RoosterApplication</mainClass>
           <layout>WAR</layout>
