@@ -15,7 +15,13 @@
     <dependency>
       <groupId>cn.fetosoft</groupId>
       <artifactId>rooster-core</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cn.fetosoft</groupId>
+      <artifactId>rooster-spring-boot-starter</artifactId>
+      <version>0.0.3</version>
     </dependency>
 
     <!-- spring核心包 -->
