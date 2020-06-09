@@ -3,6 +3,8 @@ package cn.fetosoft.rooster.core;
 import cn.fetosoft.rooster.utils.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,5 +38,4 @@ public class DefaultScheduled extends AbstractScheduled {
 	protected boolean isClusterExec(TaskInfo taskInfo) {
 		return ipSet.contains(NetUtil.ipToLong(taskInfo.getClusterIP()));
 	}
-
 }
