@@ -191,6 +191,14 @@ public class ZookeeperBroadcast extends AbstractTaskBroadcast {
 	public void close() {
 		try{
 			if(client!=null) {
+				String nodePath = this.roosterConfig.getZkTaskPath();
+				if(client.checkExists().forPath(nodePath)!=null) {
+					List<String> children = client.getChildren().forPath(nodePath);
+					for(String childNode : children){
+						logger.info("Delete child node >>> {}/{}", nodePath, childNode);
+						client.delete().forPath(nodePath + "/" + childNode);
+					}
+				}
 				if(treeCache!=null){
 					treeCache.close();
 				}

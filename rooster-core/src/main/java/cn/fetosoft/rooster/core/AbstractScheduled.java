@@ -13,7 +13,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
 import javax.annotation.Resource;
 
 /**
@@ -23,7 +22,8 @@ import javax.annotation.Resource;
  * @Description
  * @Version
  */
-public abstract class AbstractScheduled implements ScheduledService, InitializingBean, DisposableBean, ApplicationContextAware {
+public abstract class AbstractScheduled implements ScheduledService, InitializingBean, DisposableBean,
+		ApplicationContextAware {
 
 	/**
 	 * 记录日志

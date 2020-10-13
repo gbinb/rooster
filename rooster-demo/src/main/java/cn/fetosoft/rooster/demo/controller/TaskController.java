@@ -176,6 +176,7 @@ public class TaskController {
 			TaskInfo taskInfo = this.getTaskByCode(code);
 			taskInfo.setAction(TaskAction.STOP.getCode());
 			result = taskBroadcast.broadcast(taskInfo);
+			taskDAO.updateTaskStatus(taskInfo.getCode(), TaskAction.STOP);
 		} catch (Exception e) {
 			result = Result.FAIL.setMsg(e.getMessage());
 		}

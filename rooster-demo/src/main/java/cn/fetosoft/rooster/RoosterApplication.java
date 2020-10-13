@@ -1,7 +1,5 @@
 package cn.fetosoft.rooster;
 
-import cn.fetosoft.rooster.core.DefaultScheduled;
-import cn.fetosoft.rooster.core.ScheduledService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +21,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @RestController
 @EnableWebSocket
 @ServletComponentScan
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"cn.fetosoft.rooster"})
 public class RoosterApplication {
 
 	/**
@@ -34,11 +32,6 @@ public class RoosterApplication {
 	@RequestMapping
 	public String welcome(){
 		return "Hello world!";
-	}
-
-	@Bean
-	public ScheduledService createScheduled(){
-		return new DefaultScheduled();
 	}
 
 	@Bean
