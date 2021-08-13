@@ -1,20 +1,18 @@
-package cn.fetosoft.rooster.demo.job;
+package cn.fetosoft.rooster.demo.monitor;
 
 import cn.fetosoft.rooster.demo.controller.MonitorEvent;
-import cn.fetosoft.rooster.demo.controller.MonitorWebSocket;
 import cn.fetosoft.rooster.monitor.JobContext;
 import cn.fetosoft.rooster.monitor.JobExecListener;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
+ * 对job运行的监控
  * @author guobingbing
  * @create 2020/2/1 11:38
  */

@@ -1,4 +1,4 @@
-package cn.fetosoft.rooster.demo.job;
+package cn.fetosoft.rooster.demo.monitor;
 
 import cn.fetosoft.rooster.core.TaskAction;
 import cn.fetosoft.rooster.core.TaskInfo;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * 启动/停止任务的监控
  * @author guobingbing
  * @create 2020/1/30 10:12
  */
