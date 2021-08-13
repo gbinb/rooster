@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String ctxPath = request.getContextPath();
-    String host = request.getServerName() + ":" + request.getServerPort();
-    String ws = (request.getRequestURL().toString().contains("fetosoft.cn")?"wss":"ws") + "://" + host;
 %>
 <html>
 <head>
@@ -315,8 +313,13 @@
             return;
         }
         closeMonitorWebsocket();
-        var host = $('#hid_host_' + code).val();
-        initMonitorWebsocket('<%=ws%>/websocket/jobMonitor/' + code, code);
+        let host = location.host;
+        let wsProtocol = 'ws';
+        let protocol = document.location.protocol;
+        if(protocol.indexOf('https')===0){
+            wsProtocol = 'wss';
+        }
+        initMonitorWebsocket(wsProtocol + '://' + host + '/websocket/jobMonitor/' + code, code);
     }
 
     function stopMonitor() {

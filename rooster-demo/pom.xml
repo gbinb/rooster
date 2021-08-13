@@ -239,7 +239,7 @@
   </dependencies>
 
   <build>
-    <finalName>rooster-demo</finalName>
+    <finalName>rooster</finalName>
 
     <resources>
       <resource>
