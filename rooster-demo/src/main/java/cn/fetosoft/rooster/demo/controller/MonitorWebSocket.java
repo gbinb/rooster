@@ -1,9 +1,10 @@
-package cn.fetosoft.rooster.demo.job;
+package cn.fetosoft.rooster.demo.controller;
 
-import org.apache.commons.lang3.StringUtils;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -19,19 +20,13 @@ import java.util.concurrent.BlockingQueue;
  */
 @Component
 @ServerEndpoint(value = "/websocket/jobMonitor/{jobCode}")
-public class JobLiveMonitor implements DisposableBean {
+public class MonitorWebSocket implements DisposableBean, ApplicationListener<MonitorEvent> {
 
-	private final Logger logger = LoggerFactory.getLogger(JobLiveMonitor.class);
-	private final static BlockingQueue<String> QUEUE = new ArrayBlockingQueue<>(100);
+	private final Logger logger = LoggerFactory.getLogger(MonitorWebSocket.class);
+	private final static BlockingQueue<MonitorEvent> QUEUE = new ArrayBlockingQueue<>(100);
 	private static volatile boolean isConn = false;
 	private static volatile String jobCode = null;
 	private Session session;
-
-	public void put(String code, String data){
-		if(isConn && code.equals(jobCode)) {
-			QUEUE.offer(data);
-		}
-	}
 
 	@OnOpen
 	public void openSession(Session session, @PathParam("jobCode") String code){
@@ -40,6 +35,13 @@ public class JobLiveMonitor implements DisposableBean {
 		isConn = true;
 		Thread thread = new Thread(new SendTextTask(session), "sendText");
 		thread.start();
+	}
+
+	@Override
+	public void onApplicationEvent(MonitorEvent event) {
+		if(isConn && event.getCode().equals(jobCode)) {
+			QUEUE.offer(event);
+		}
 	}
 
 	class SendTextTask implements Runnable{
@@ -55,9 +57,9 @@ public class JobLiveMonitor implements DisposableBean {
 			logger.info("Start sending messages >>>>>>>>>>>>>");
 			try{
 				while (isConn) {
-					String data = QUEUE.poll();
-					if(StringUtils.isNotBlank(data)) {
-						tsession.getBasicRemote().sendText(data);
+					MonitorEvent event = QUEUE.poll();
+					if(event!=null) {
+						tsession.getBasicRemote().sendText(JSON.toJSONString(event));
 					}
 				}
 			}catch(IOException e){

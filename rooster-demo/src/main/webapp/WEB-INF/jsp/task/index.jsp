@@ -77,7 +77,7 @@
         <button class="sui-btn btn-xlarge btn-primary" onclick="stop()">停止</button>
     </div>
     <div class="sui-btn-group">
-        <button class="sui-btn btn-xlarge btn-primary" onclick="monitor()">应用监控</button>
+        <button class="sui-btn btn-xlarge btn-primary" onclick="monitor()">启动监控</button>
     </div>
     <div class="sui-btn-group">
         <button class="sui-btn btn-xlarge btn-primary" onclick="stopMonitor()">停止监控</button>
@@ -173,7 +173,7 @@
 
     function queryClusters() {
         $('#span_clusters').empty();
-        $.get('<%=ctxPath%>/task/getClusters', function (data) {
+        $.get('<%=ctxPath%>/getClusters', function (data) {
             $('#span_clusters').text('注册的节点：' + data);
         });
     }
@@ -181,7 +181,7 @@
     //查询运行中的任务
     function queryRunningTasks(taskCode) {
         $('#task_body').empty();
-        $.get('<%=ctxPath%>/task/fromMysql', function (data) {
+        $.get('<%=ctxPath%>/fromMysql', function (data) {
             var sb = new StringBuilder();
             $.each(data, function (index, task) {
                 sb.append("<tr>");
@@ -219,7 +219,7 @@
         $('#hid_action').val(action);
         if(action=='modify'){
             var code = getSelectedCheckbox();
-            $.get('<%=ctxPath%>/task/fromMysql', {'code':code}, function (data){
+            $.get('<%=ctxPath%>/fromMysql', {'code':code}, function (data){
                 if(data && data.length>0){
                     var task = data[0];
                     $('#inputCode').val(task.code);
@@ -238,10 +238,10 @@
 
     function save() {
         var params = $('#form_task_save').serializeJSON();
-        var url = '<%=ctxPath%>/task/add';
+        var url = '<%=ctxPath%>/add';
         var action = $('#hid_action').val();
         if(action=='modify'){
-            url = '<%=ctxPath%>/task/modify';
+            url = '<%=ctxPath%>/modify';
         }
         $.post(url, params, function (data) {
             $.alert(data.msg);
@@ -255,7 +255,7 @@
     function remove() {
         if(confirm("确定要删除吗?")){
             var code = getSelectedCheckbox();
-            $.post('<%=ctxPath%>/task/remove', {code:code}, function (data) {
+            $.post('<%=ctxPath%>/remove', {code:code}, function (data) {
                 $.alert(data.msg);
                 if(data.code=='SUCCESS'){
                     setTimeout(queryRunningTasks, 2000);
@@ -266,7 +266,7 @@
 
     function start() {
         var code = getSelectedCheckbox();
-        $.post('<%=ctxPath%>/task/start', {code:code}, function (data) {
+        $.post('<%=ctxPath%>/start', {code:code}, function (data) {
             $.alert(data.msg);
             if(data.code=='SUCCESS'){
                 setTimeout(function () {
@@ -282,9 +282,9 @@
     function stop() {
         if(confirm("确定要停止吗?")){
             var code = getSelectedCheckbox();
-            $.post('<%=ctxPath%>/task/stop', {code:code}, function (data) {
+            $.post('<%=ctxPath%>/stop', {code:code}, function (data) {
                 $.alert(data.msg);
-                if(data.code=='SUCCESS'){
+                if(data.code==='SUCCESS'){
                     setTimeout(function () {
                         queryRunningTasks(code);
                     }, 2000);

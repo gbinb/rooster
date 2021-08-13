@@ -1,12 +1,17 @@
 package cn.fetosoft.rooster.demo.job;
 
+import cn.fetosoft.rooster.demo.controller.MonitorEvent;
+import cn.fetosoft.rooster.demo.controller.MonitorWebSocket;
 import cn.fetosoft.rooster.monitor.JobContext;
 import cn.fetosoft.rooster.monitor.JobExecListener;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,14 +19,13 @@ import org.springframework.stereotype.Component;
  * @create 2020/2/1 11:38
  */
 @Component
-public class JobMonitorDemo implements JobExecListener {
+public class JobMonitorDemo implements JobExecListener, ApplicationContextAware {
 
 	/**
 	 * log
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(JobMonitorDemo.class);
-	@Autowired
-	private JobLiveMonitor jobLiveMonitor;
+	private ApplicationContext applicationContext;
 
 	@Override
 	public void beforeExec(JobContext jobContext) {
@@ -36,10 +40,15 @@ public class JobMonitorDemo implements JobExecListener {
 		if(jobContext.isException()){
 			logger.error(jobContext.getErrorMsg());
 		}
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("code", jobContext.getTaskInfo().getCode());
-		jsonObject.put("fireTime", DateFormatUtils.format(jobContext.getFireTime(), "yyyy-MM-dd HH:mm:ss"));
-		jsonObject.put("runTime", jobContext.getRunTime());
-		jobLiveMonitor.put(jobContext.getTaskInfo().getCode(), jsonObject.toJSONString());
+
+		MonitorEvent event = new MonitorEvent(jobContext.getTaskInfo().getCode());
+		event.setFireTime(DateFormatUtils.format(jobContext.getFireTime(), "yyyy-MM-dd HH:mm:ss"));
+		event.setRunTime(jobContext.getRunTime());
+		applicationContext.publishEvent(event);
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }

@@ -27,7 +27,7 @@ import java.util.*;
  * @create 2020/1/26 17:37
  */
 @Controller
-@RequestMapping("/task")
+@RequestMapping
 public class TaskController {
 
 	@Resource

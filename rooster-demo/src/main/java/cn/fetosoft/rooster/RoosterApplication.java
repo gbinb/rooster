@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -28,11 +27,6 @@ public class RoosterApplication {
 	 * 日志
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoosterApplication.class);
-
-	@RequestMapping
-	public String welcome(){
-		return "Hello world!";
-	}
 
 	@Bean
 	public ServerEndpointExporter serverEndpointExporter() {
